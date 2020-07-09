@@ -34,7 +34,7 @@ namespace CSharpKatas
     }
 
     [TestFixture]
-    [Ignore]
+    [Ignore("test")]
     public class TestDoStuff
     {
         [Test]

@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 
 namespace CSharpKatas
 {
@@ -8,10 +10,13 @@ namespace CSharpKatas
     {
         public IEnumerable<Person> ConvertFromJson(string salariedPeople, string hourlyPeople)
         {
-            // todo #1: Add a reference to Json.NET (Newtonsoft.Json) using NuGet
-            // todo #2: Remove the Ignore attribute and make the tests pass
-            // todo #3: Refactor so there is only one call to the Json.NET library and no loops
-            return null;
+            string[] people = { salariedPeople, hourlyPeople };
+            Type[] types = { typeof(IEnumerable<SalariedEmployee>), typeof(IEnumerable<HourlyEmployee>) };
+            return people
+                .Select(p => p ?? "")
+                .Zip(types, (s, t) => JsonConvert.DeserializeObject(s, t) as IEnumerable<Person>)
+                .Where(list => list != null)
+                .SelectMany(a => a);
         }
     }
 
@@ -30,11 +35,10 @@ namespace CSharpKatas
         public decimal RatePerHour { get; set; }
     }
 
-    [TestFixture]
-    [Ignore]
+    [TestClass]
     public class TestGenerics
     {
-        [Test]
+        [TestMethod]
         public void ConvertFromJson_EmptyString_ReturnsZeroResults()
         {
             var convert = new PersonConverter();
@@ -42,7 +46,7 @@ namespace CSharpKatas
             Assert.AreEqual(0, people.Count());
         }
 
-        [Test]
+        [TestMethod]
         public void ConvertFromJson_NullParameters_ReturnsZeroResults()
         {
             var convert = new PersonConverter();
@@ -50,7 +54,7 @@ namespace CSharpKatas
             Assert.AreEqual(0, people.Count());
         }
 
-        [Test]
+        [TestMethod]
         public void ConvertFromJson_SalariedEmployee_ReturnsStronglyTypedEmployee()
         {
             var convert = new PersonConverter();
@@ -62,7 +66,7 @@ namespace CSharpKatas
             Assert.AreEqual(10, bob.Salary);
         }
 
-        [Test]
+        [TestMethod]
         public void ConvertFromJson_HourlyEmployee_ReturnsStronglyTypedHourlyEmployee()
         {
             var convert = new PersonConverter();
@@ -74,7 +78,7 @@ namespace CSharpKatas
             Assert.AreEqual(5.5M, bob.RatePerHour);
         }
 
-        [Test]
+        [TestMethod]
         public void ConvertFromJson_HourlyAndSalariedEmployees_GetMerged()
         {
             var convert = new PersonConverter();

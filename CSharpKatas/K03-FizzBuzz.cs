@@ -21,7 +21,7 @@ namespace CSharpKatas
     }
 
     [TestFixture]
-    [Ignore]
+    [Ignore("test")]
     public class FizzBuzz
     {
         [Test]
