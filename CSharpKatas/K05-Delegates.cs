@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using NUnit.Framework;
 
 namespace CSharpKatas
 {
@@ -14,32 +17,76 @@ namespace CSharpKatas
 
     public class MockDatabase
     {
+        
+        private List<Employee> employees;
+        private List<Sale> sales;
+
+        public MockDatabase()
+        {
+            this.employees = new List<Employee>();
+            this.sales = new List<Sale>();
+        }
         public void InsertEmployee(Employee employee)
         {
             // todo #1: Remove the ignore attribute and get all the tests to pass any way you can
             // todo #2: Refactor out common auto increment logic from InsertEmployee and InsertSale into a GetNextId function (you'll need System.Func a good grasp of generics)
             // todo #3: Refactor GetNextId so it has no if statements and no ternary operators (hint: use the ?? operator)
             // todo #4: Refactor out *all* common logic so InsertEmployee and InsertSale are a single line of code (lots of possible solutions). Was this an improvement?
+            if (this.GetEmployeeById(employee.EmployeeId ?? -1) == null)
+            {
+                employee.EmployeeId = employee.EmployeeId ?? this.GetNextId(employees, e => e.EmployeeId);
+                this.employees.Add(employee);
+            }
         }
 
         public void InsertSale(Sale sale)
         {
-            
+            this.Insert(this.sales, sale, s => s.SaleId, (s, id) => s.SaleId = id, this.GetSaleById, s => s.SaleId);
         }
 
         public Employee GetEmployeeById(int employeeId)
         {
-            return new Employee();
+            var ret = this.employees
+                .FirstOrDefault(e => e.EmployeeId == employeeId);
+            return ret;
         }
         
         public Sale GetSaleById(int saleId)
         {
-            return new Sale();
+            var ret = this.sales
+                .FirstOrDefault(s => s.SaleId == saleId);
+            return ret;
+        }
+
+        private void Insert<T>(List<T> list, 
+                               T item, 
+                               Func<T, int?> getId,
+                               Action<T, int> setId, 
+                               Func<int, T> getter, 
+                               Func<T, int?> selector)
+        {
+            if (getter(getId(item) ?? -1) == null)
+            {
+                if (getId(item) == null)
+                {
+                    setId(item, this.GetNextId(list, selector));
+                }
+
+                list.Add(item);
+            }
+        }
+
+        private int GetNextId<T>(IEnumerable<T> list, Func<T, int?> selector)
+        {
+            var maxId = list
+                .Select(selector)
+                .Max();
+            
+            return (maxId ?? 0) + 1;
         }
     }
 
     [TestFixture]
-    [Ignore("test")]
     public class TestMockDatabase
     {
         [Test]

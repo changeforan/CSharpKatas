@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using System.Linq;
 
 namespace CSharpKatas
@@ -15,44 +15,44 @@ namespace CSharpKatas
         }
     }
 
-    [TestClass]
+    [TestFixture]
     public class Test
     {
-        [TestMethod]
+        [Test]
         public void SumNumbers_StartAt100SumNext1_TotalIs100()
         {
             var kata = new Calculator();
             Assert.AreEqual(100, kata.SumNumbers(100, 1));
         }
 
-        [TestMethod]
+        [Test]
         public void SumNumbers_StartAt100SumNext2_TotalIs201()
         {
             var kata = new Calculator();
             Assert.AreEqual(201, kata.SumNumbers(100, 2));
         }
-        [TestMethod]
+        [Test]
         public void SumNumbers_StartAt100SumNext0_TotalIs0()
         {
             var kata = new Calculator();
             Assert.AreEqual(0, kata.SumNumbers(100, 0));
         }
 
-        [TestMethod]
+        [Test]
         public void SumNumbers_StartAt0SumNext0_TotalIs0()
         {
             var kata = new Calculator();
             Assert.AreEqual(0, kata.SumNumbers(0, 0));
         }
 
-        [TestMethod]
+        [Test]
         public void SumNumbers_StartAt0SumNext3_TotalIs3()
         {
             var kata = new Calculator();
             Assert.AreEqual(3, kata.SumNumbers(0, 3));
         }
 
-        [TestMethod]
+        [Test]
         public void SumNumbers_StartAt0SumNext100_TotalIs5050()
         {
             var kata = new Calculator();

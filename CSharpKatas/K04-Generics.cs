@@ -1,7 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Newtonsoft.Json;
 
 namespace CSharpKatas
@@ -14,7 +14,7 @@ namespace CSharpKatas
             Type[] types = { typeof(IEnumerable<SalariedEmployee>), typeof(IEnumerable<HourlyEmployee>) };
             return people
                 .Select(p => p ?? "")
-                .Zip(types, (s, t) => JsonConvert.DeserializeObject(s, t) as IEnumerable<Person>)
+                .Zip(types, (p, t) => JsonConvert.DeserializeObject(p, t) as IEnumerable<Person>)
                 .Where(list => list != null)
                 .SelectMany(a => a);
         }
@@ -35,10 +35,10 @@ namespace CSharpKatas
         public decimal RatePerHour { get; set; }
     }
 
-    [TestClass]
+    [TestFixture]
     public class TestGenerics
     {
-        [TestMethod]
+        [Test]
         public void ConvertFromJson_EmptyString_ReturnsZeroResults()
         {
             var convert = new PersonConverter();
@@ -46,7 +46,7 @@ namespace CSharpKatas
             Assert.AreEqual(0, people.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void ConvertFromJson_NullParameters_ReturnsZeroResults()
         {
             var convert = new PersonConverter();
@@ -54,7 +54,7 @@ namespace CSharpKatas
             Assert.AreEqual(0, people.Count());
         }
 
-        [TestMethod]
+        [Test]
         public void ConvertFromJson_SalariedEmployee_ReturnsStronglyTypedEmployee()
         {
             var convert = new PersonConverter();
@@ -66,7 +66,7 @@ namespace CSharpKatas
             Assert.AreEqual(10, bob.Salary);
         }
 
-        [TestMethod]
+        [Test]
         public void ConvertFromJson_HourlyEmployee_ReturnsStronglyTypedHourlyEmployee()
         {
             var convert = new PersonConverter();
@@ -78,7 +78,7 @@ namespace CSharpKatas
             Assert.AreEqual(5.5M, bob.RatePerHour);
         }
 
-        [TestMethod]
+        [Test]
         public void ConvertFromJson_HourlyAndSalariedEmployees_GetMerged()
         {
             var convert = new PersonConverter();
